@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
+
+    <script>
+        function basketball_points() {
+            let two_pointers = parseInt(prompt("Enter the number of two pointers scored:"));
+            let three_pointers = parseInt(prompt("Enter the number of three pointers scored:"));
+            let final_score = (two_pointers * 2) + (three_pointers * 3);
+            return final_score
+        }
+
+        console.log(basketball_points());
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
+
+    <script>
+        function check(n) {
+            let half = (n / 2) + 1;
+            half = parseInt(half);
+
+            var prime = true;
+
+            for (let i = 2; i <= half; i++) {
+                let check_prime = n % i;
+
+                if ((check_prime) == 0) {
+                    prime = false;
+                    break
+                }
+            }
+
+            return prime;
+        }
+
+        function prime_num_in_range() {
+            let number_first = parseInt(prompt("Enter first number:"));
+            let number_second = parseInt(prompt("Enter second number:"));
+
+            let prime_nums_array = []
+
+            for (let i = number_first; i <= number_second; i++){
+                if (check(i)) {
+                    prime_nums_array.push(i);
+                }
+            }
+
+            return prime_nums_array
+        }
+
+        console.log("The prime numbers found in the range provided are:",prime_num_in_range());
+
+
+    </script>
+</body>
+
+</html>

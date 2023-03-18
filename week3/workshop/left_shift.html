@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
+
+    <script>
+        function left_shift() {
+            let base_num = parseFloat(prompt("Enter the first number:"));
+            let shift_num = parseFloat(prompt("Enter the second number:"));
+
+            let shift_fin = 2**shift_num;
+
+            let left_shift_number = base_num * shift_fin;
+
+            return left_shift_number;
+        }
+
+        console.log(left_shift())
+    </script>
+</body>
+
+</html>

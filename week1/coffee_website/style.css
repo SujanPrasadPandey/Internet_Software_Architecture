@@ -33,7 +33,7 @@ nav {
 }
 
 nav .logo {
-    width: 80px;
+    width: auto;
 }
 
 nav ul li {

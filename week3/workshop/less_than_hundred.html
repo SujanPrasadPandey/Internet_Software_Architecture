@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
+
+    <script>
+        function less_than_100() {
+            let number_first = parseFloat(prompt("Enter the first number:"));
+            let number_second = parseFloat(prompt("Enter the second number:"));
+            let sum_of_numbers = number_first + number_second;
+
+            if (sum_of_numbers <= 100) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        if (less_than_100()){
+            console.log("true")
+        } else {
+            console.log("false")
+        }
+    </script>
+</body>
+
+</html>

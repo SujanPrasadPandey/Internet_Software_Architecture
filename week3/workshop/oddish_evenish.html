@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello, world!</h1>
+
+    <script>
+        function oddish_evenish() {
+            let user_input = parseInt(prompt("Enter an integer:"));
+            const array_of_digits = Array.from(user_input.toString()).map(Number);
+            console.log(array_of_digits)
+            let sum_of_array = 0;
+
+            for (let i = 0; i < array_of_digits.length; i++) {
+                sum_of_array += array_of_digits[i];
+            }
+            console.log(sum_of_array);
+
+            if ((sum_of_array % 2) == 0) {
+                return ("Evenish");
+            } else {
+                return ("Oddish");
+            }
+        }
+
+        console.log(oddish_evenish())
+    </script>
+</body>
+
+</html>
