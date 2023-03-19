@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="fetch-data">Fetch Data</button>
+    <div id="data-container"></div>
+    <script>
+        const button = document.getElementById('fetch-data');
+        const dataContainer = document.getElementById('data-container');
+
+            button.addEventListener('click', () => {
+                //create an instance of the XMLHttpRequest object
+                const xhr = new XMLHttpRequest();
+
+                //define the request type, URL, and whether it should be asynchronous
+                xhr.open('GET', 'https://api.github.com/search/users?q=SujanPrasadPandey.user', true);
+
+                //send the request
+                xhr.send();
+
+                //set the callback function for when the response is received
+                xhr.onload = () => {
+                    //xheck that the status code is OK (200)
+                    if (xhr.status === 200) {
+                        //update the data container with the response data
+                        dataContainer.innerHTML = xhr.responseText;
+                    }
+                }
+            })
+    </script>
+</body>
+</html>
