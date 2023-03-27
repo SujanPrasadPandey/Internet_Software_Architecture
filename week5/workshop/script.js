@@ -1,33 +1,37 @@
-const apiKey = 'cdd1228da4be2430078ccf5f80d3d1f7';
-const cityNameElement = document.querySelector('#city-name');
-const temperatureElement = document.querySelector('#temperature');
-const humidityElement = document.querySelector('#humidity');
-const descriptionElement = document.querySelector('#description');
-const searchButton = document.querySelector('#search-button');
-const cityInput = document.querySelector('#city-input');
+const API_KEY = "2cdb920fb0a04d56bbd21016232703";
 
-function getWeatherData(city) {
-  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      cityNameElement.textContent = data.name;
-      temperatureElement.textContent = data.main.temp;
-      humidityElement.textContent = data.main.humidity;
-      descriptionElement.textContent = data.weather[0].description;
-    })
-    .catch(error => {
-      alert('Error');
-      console.error(error);
-    });
+async function fetchData(url) {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
 }
 
-searchButton.addEventListener('click', event => {
-  event.preventDefault();
-  const city = cityInput.value.trim();
-  if (city !== '') {
-    getWeatherData(city);
-  }
-});
+async function getCurrentWeather(location) {
+  const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${location}`;
+  const data = await fetchData(url);
+  return data;
+}
 
-getWeatherData("Winslow");
+async function searchWeather() {
+  const searchQuery = document.getElementById("search").value;
+  const data = await getCurrentWeather(searchQuery);
+  displayWeatherData(data);
+}
+
+async function getCurrentLocation() {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const data = await getCurrentWeather(`${latitude},${longitude}`);
+    displayWeatherData(data);
+  });
+}
+
+function displayWeatherData(data) {
+  const weatherDataDiv = document.getElementById("weather-data");
+  weatherDataDiv.innerHTML = `
+          <h2>${data.location.name}</h2>
+          <p>Temperature: ${data.current.temp_c} C</p>
+          <p>Condition: ${data.current.condition.text}</p>
+        `;
+}

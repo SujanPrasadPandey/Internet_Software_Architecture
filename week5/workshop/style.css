@@ -1,72 +1,76 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e2e;
-    color: #cdd6f4;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
+  font-size: 36px;
+  margin: 40px 0;
+  color: #444;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
 
-form {
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Input Styles */
+input[type="text"] {
+  display: block;
+  margin: 0 auto;
+  padding: 10px;
+  width: 300px;
+  border-radius: 20px;
+  border: none;
+  background-color: #fff;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  color: #444;
+  outline: none;
+  text-align: center;
 }
 
-label {
-    margin-right: 10px;
+input[type="text"]::placeholder {
+  color: #999;
 }
 
-input {
-    padding: 5px;
-    font-size: 16px;
-    border: 1px solid #89b4fa;
-    border-radius: 5px;
-}
-
-input[type="text"],
-textarea {
-    background-color: #313244;
-    color: #cdd6f4;
-}
-
+/* Button Styles */
 button {
-    padding: 5px 10px;
-    background-color: #89b4fa;
-    color: #181825;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #444;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
 
-#weather-info {
-    max-width: 400px;
-    margin: 0 auto;
-    border: 1px solid #89b4fa;
-    border-radius: 5px;
-    padding: 20px;
+button:hover {
+  background-color: #666;
 }
 
-#city-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
+/* Weather Data Styles */
+#weather-data {
+  margin: 40px auto;
+  max-width: 600px;
+  text-align: center;
 }
 
-#temperature {
-    font-size: 36px;
-    font-weight: bold;
-    margin: 0;
+#weather-data h2 {
+  font-size: 24px;
+  color: #444;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
 
-#humidity {
-    font-size: 24px;
-    margin: 0;
-}
-
-#description {
-    text-transform: capitalize;
-    margin: 0;
+#weather-data p {
+  font-size: 18px;
+  color: #666;
+  margin: 10px 0;
 }
