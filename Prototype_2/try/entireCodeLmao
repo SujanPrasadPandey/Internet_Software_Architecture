@@ -1,0 +1,329 @@
+how do i change the codes for this question:
+
+the question is:
+In this third and final version of your prototype, you will implement browser
+caching of the weather data, in order to avoid network / server access when
+not required. This can be achieved with the localStorage JavaScript API, as
+covered in the workshops. You should host your weather app on a free web
+hosting platform and you should also enable client side chasing to make the
+webpage accessible in offline mode.
+You should also draw an UML Deployment Diagram, Activity Diagram and
+Sequence Diagram of your new prototype’s architecture
+Summary of what needs to be submitted:
+- Your updated HTML / JavaScript page, showing browser caching
+JavaScript code.
+- A screenshot of your data stored in the browser (i.e. Chrome console)
+- Your PHP scripts
+- Your updated UML Deployment Diagram (e.g. PNG image), which
+should now include your browser cache node.
+- UML Activity Diagram
+- UML sequence Diagram
+
+
+the codes to be changed are:
+1. index.php:
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1>Weather App</h1>
+    <form id="locationForm" accept-charset="UTF-8">
+      <label for="locationInput">Enter Location:</label>
+      <input type="text" id="locationInput" required />
+      <button type="submit">Get Weather</button> <!-- Change button type to "submit" -->
+    </form>
+    <div id="weatherData"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+2. script.js:
+document
+  .getElementById("locationForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent default form submission
+    checkLocation();
+  });
+
+var defaultLocation = "winslow";
+
+function checkLocation() {
+  var location = document.getElementById("locationInput").value;
+
+  // Send an AJAX request to check_location.php
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "check_location.php", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      var response = xhr.responseText;
+      if (response === "No") {
+        fetchLocationWeather(location);
+        setTimeout(function () {
+          fetchWeatherData(location);
+        }, 1000); // Delay of 2000 milliseconds (2 seconds)
+      } else {
+        fetchWeatherData(location);
+      }
+    }
+  };
+  xhr.send("location=" + encodeURIComponent(location));
+}
+
+function fetchLocationWeather(location) {
+  var request = new XMLHttpRequest();
+  var apiKey = "cdd1228da4be2430078ccf5f80d3d1f7"; // Replace with your OpenWeatherMap API key
+
+  request.open(
+    "GET",
+    "https://api.openweathermap.org/data/2.5/weather?q=" +
+      encodeURIComponent(location) +
+      "&appid=" +
+      apiKey,
+    true
+  );
+
+  request.onreadystatechange = function () {
+    if (request.readyState === 4 && request.status === 200) {
+      var response = JSON.parse(request.responseText);
+
+      // Extract the required information
+      var temperatureKelvin = response.main.temp;
+      var humidity = response.main.humidity;
+      var description = response.weather[0].description;
+      var cityName = response.name;
+      var weatherCondition = response.weather[0].main;
+      var weatherIcon = response.weather[0].icon;
+      var rainfall = response.rain ? response.rain["1h"] : 0;
+      var windSpeed = response.wind.speed;
+      var pressure = response.main.pressure;
+
+      // Convert temperature from Kelvin to Celsius and round it to an integer
+      var temperatureCelsius = Math.floor(temperatureKelvin - 273.15);
+
+      // Create a new JavaScript object with the filtered data
+      var filteredData = {
+        cityName: cityName,
+        weatherCondition: weatherCondition,
+        weatherIcon: weatherIcon,
+        temperature: temperatureCelsius,
+        rainfall: rainfall,
+        windSpeed: windSpeed,
+        humidity: humidity,
+        pressure: pressure,
+      };
+
+      // Convert the JavaScript object to JSON format
+      var jsonData = JSON.stringify(filteredData);
+
+      // Save the JSON data to the database table
+      saveWeatherData(location, jsonData);
+    }
+  };
+
+  request.send();
+}
+
+function saveWeatherData(location, weatherData) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "populate_table.php", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      console.log(xhr.responseText);
+    }
+  };
+
+  // Parse the JSON string to access its properties
+  var parsedData = JSON.parse(weatherData);
+
+  // Update the parameter name to "parsedData" instead of "weatherData"
+  xhr.send(
+    "location=" +
+      encodeURIComponent(location) +
+      "&weatherData=" +
+      encodeURIComponent(JSON.stringify(parsedData)) +
+      "&cityName=" +
+      encodeURIComponent(parsedData.cityName) +
+      "&weatherCondition=" +
+      encodeURIComponent(parsedData.weatherCondition) +
+      "&weatherIcon=" +
+      encodeURIComponent(parsedData.weatherIcon) +
+      "&temperature=" +
+      encodeURIComponent(parsedData.temperature) +
+      "&rainfall=" +
+      encodeURIComponent(parsedData.rainfall) +
+      "&windSpeed=" +
+      encodeURIComponent(parsedData.windSpeed) +
+      "&humidity=" +
+      encodeURIComponent(parsedData.humidity) +
+      "&pressure=" +
+      encodeURIComponent(parsedData.pressure)
+  );
+}
+
+function fetchWeatherData(location) {
+  // Send an AJAX request to fetch_location.php
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "fetch_location.php", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        document.getElementById("weatherData").innerHTML = xhr.responseText;
+      } else {
+        console.log("Error: " + xhr.status);
+      }
+    }
+  };
+  xhr.send("location=" + location);
+}
+
+fetchLocationWeather(defaultLocation);
+setTimeout(function () {
+  fetchWeatherData(defaultLocation);
+}, 2000);
+
+
+
+
+3. check_location.php:
+<?php
+
+require_once "db_credentials.php";
+
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get the location from the form
+    $location = $_POST["location"];
+
+    // Create a connection to the database
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check if the connection was successful
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare the SQL query
+    $sql = "SELECT * FROM $tableName WHERE location = '$location'";
+    $result = $conn->query($sql);
+
+    // Check if the location exists in the table
+    if ($result->num_rows > 0) {
+        echo "Yes";
+    } else {
+        echo "No";
+    }
+
+    // Close the database connection
+    $conn->close();
+}
+?>
+
+
+
+4. fetch_location.php:
+<?php
+
+require_once "db_credentials.php";
+
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get the location from the form
+    $location = $_POST["location"];
+
+    // Create a connection to the database
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check if the connection was successful
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare the SQL query
+    $sql = "SELECT * FROM $tableName WHERE location = '$location'";
+
+    // Execute the query
+    $result = $conn->query($sql);
+
+    // Check if the location exists in the table
+    if ($result->num_rows > 0) {
+        // Fetch all rows for the given location
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+        // Print the weather data of each row
+        foreach ($rows as $row) {
+            echo "<h3>Location: " . $row['city_name'] . "</h3>";
+            echo "Weather Condition: " . $row['weather_condition'] . "<br>";
+            echo "Temperature: " . $row['temperature'] . "°C<br>";
+            echo "Rainfall: " . $row['rainfall'] . "mm<br>";
+            echo "Wind Speed: " . $row['wind_speed'] . "m/s<br>";
+            echo "Humidity: " . $row['humidity'] . "%<br>";
+            echo "Pressure: " . $row['pressure'] . "hPa<br><br>";
+        }
+    } else {
+        echo "No weather data found for the location '$location'.";
+    }
+
+    // Close the database connection
+    $conn->close();
+}
+?>
+
+
+5. populate_table.php:
+<?php
+require_once "db_credentials.php";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get the weather data from the request
+    $location = $_POST["location"];
+    $weatherData = json_decode($_POST["weatherData"], true);
+
+    // Create a connection to the database
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check if the connection was successful
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Prepare the SQL query to insert the weather data
+    $cityName = $conn->real_escape_string($weatherData['cityName']);
+    $weatherCondition = $conn->real_escape_string($weatherData['weatherCondition']);
+    $weatherIcon = $conn->real_escape_string($weatherData['weatherIcon']);
+    $temperature = $weatherData['temperature'];
+    $rainfall = $weatherData['rainfall'];
+    $windSpeed = $weatherData['windSpeed'];
+    $humidity = $weatherData['humidity'];
+    $pressure = $weatherData['pressure'];
+
+    $sql = "INSERT INTO $tableName (location, city_name, weather_condition, weather_icon, temperature, rainfall, wind_speed, humidity, pressure)
+            VALUES ('$location', '$cityName', '$weatherCondition', '$weatherIcon', $temperature, $rainfall, $windSpeed, $humidity, $pressure)";
+
+    // Execute the SQL query
+    if ($conn->query($sql) === true) {
+        echo "Weather data saved successfully!";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    // Close the database connection
+    $conn->close();
+}
+?>
+
+
+6. db_credentials.php:
+<?php
+$servername = "localhost";  // Change this to your MySQL server name
+$username = "root";  // Change this to your MySQL username
+$password = "";  // Change this to your MySQL password
+$dbname = "Sujan'sWeatherSearcher";  // Change this to your MySQL database name
+$tableName = "Weather_Data";  // Change this to your table name
+?>

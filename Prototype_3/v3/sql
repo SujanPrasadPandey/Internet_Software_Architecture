@@ -1,0 +1,12 @@
+CREATE TABLE Weather_Data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    location VARCHAR(255),
+    city_name VARCHAR(255),
+    weather_condition VARCHAR(255),
+    weather_icon VARCHAR(255),
+    temperature INT,
+    rainfall DECIMAL(8, 2),
+    wind_speed DECIMAL(8, 2),
+    humidity INT,
+    pressure INT
+);

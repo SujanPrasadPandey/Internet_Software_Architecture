@@ -31,6 +31,15 @@ function getWeatherData(city) {
       const weatherCode = data.weather[0].icon;
       const iconUrl = `https://openweathermap.org/img/wn/${weatherCode}.png`;
       weatherIcon.setAttribute("src", iconUrl);
+
+      // Save weather data to database
+      saveWeatherData(
+        city,
+        data.main.temp,
+        data.main.humidity,
+        data.main.pressure,
+        data.wind.speed
+      );
     })
     .catch((error) => {
       alert("Error");
@@ -38,12 +47,31 @@ function getWeatherData(city) {
     });
 }
 
-searchButton.addEventListener("click", (event) => {
-  event.preventDefault();
-  const city = cityInput.value.trim();
-  if (city !== "") {
-    getWeatherData(city);
-  }
+function saveWeatherData(city, temperature, humidity, pressure, wind) {
+  // Send an AJAX request to the server to save the weather data
+  const xhr = new XMLHttpRequest();
+  const url = "insert_weather_data.php";
+  const params = `city=${encodeURIComponent(
+    city
+  )}&temperature=${encodeURIComponent(
+    temperature
+  )}&humidity=${encodeURIComponent(humidity)}&pressure=${encodeURIComponent(
+    pressure
+  )}&wind_speed=${encodeURIComponent(wind)}`;
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log(xhr.responseText);
+    }
+  };
+  xhr.send(params);
+}
+
+searchButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  const city = cityInput.value;
+  getWeatherData(city);
 });
 
-getWeatherData("Winslow");
+getWeatherData('Winslow');

@@ -7,6 +7,7 @@ const windElement = document.querySelector("#wind");
 const timeElement = document.querySelector("#time");
 const descriptionElement = document.querySelector("#description");
 const searchButton = document.querySelector("#search-button");
+const saveButton = document.querySelector("#save-button");
 const cityInput = document.querySelector("#city-input");
 
 function getWeatherData(city) {
@@ -38,12 +39,39 @@ function getWeatherData(city) {
     });
 }
 
+function saveWeatherData(city, temperature, humidity, pressure, wind) {
+  // Send an AJAX request to the server to save the weather data
+  const xhr = new XMLHttpRequest();
+  const url = "insert_weather_data.php";
+  const params = `city=${encodeURIComponent(
+    city
+  )}&temperature=${encodeURIComponent(
+    temperature
+  )}&humidity=${encodeURIComponent(humidity)}&pressure=${encodeURIComponent(
+    pressure
+  )}&wind_speed=${encodeURIComponent(wind)}`;
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log(xhr.responseText);
+    }
+  };
+  xhr.send(params);
+}
+
 searchButton.addEventListener("click", (event) => {
   event.preventDefault();
-  const city = cityInput.value.trim();
-  if (city !== "") {
-    getWeatherData(city);
-  }
+  const city = cityInput.value;
+  getWeatherData(city);
 });
 
-getWeatherData("Winslow");
+saveButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  const city = cityNameElement.textContent;
+  const temperature = temperatureElement.textContent;
+  const humidity = humidityElement.textContent;
+  const pressure = pressureElement.textContent;
+  const wind = windElement.textContent;
+  saveWeatherData(city, temperature, humidity, pressure, wind);
+});

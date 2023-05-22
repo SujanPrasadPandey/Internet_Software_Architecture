@@ -9,15 +9,16 @@
   <body>
     <h1>Sujan's Weather Searcher</h1>
 
-    <form>
+    <form method="post" action="insert_weather_data.php">
       <label>City:</label>
-      <input type="text" id="city-input" />
+      <input type="text" id="city-input" name="city" />
       <button type="submit" id="search-button">Search</button>
+      <button type="button" id="save-button">Save</button>
     </form>
 
     <div id="weather-info">
       <p id="city-name"></p>
-      <p>Weather: <span id="description"></span><img id="weather-icon" /></p>
+      <p>Weather: <span id="description"></span><img id="weather-icon" alt="Weather Icon" /></p>
 
       <p>Time: <span id="time"></span></p>
       <p>Temperature: <span id="temperature"></span> &deg;C</p>
